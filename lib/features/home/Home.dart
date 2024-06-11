@@ -277,7 +277,7 @@ class HomeScreen extends StatelessWidget {
                                     ),
                                     SizedBox(
                                         height: 2), // Beri jarak antara baris
-                                    Text('3 Ekor',
+                                    Text('5 Ekor',
                                         style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold)),
