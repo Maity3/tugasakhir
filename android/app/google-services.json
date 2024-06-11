@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "722777072311",
+    "project_id": "st-akhir",
+    "storage_bucket": "st-akhir.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722777072311:android:6f24f2b328b557c44ea332",
+        "android_client_info": {
+          "package_name": "com.example.sobatternak_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDanRKG3jbeHiA9SZAZD-9DkKdM3y3He08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
