@@ -7,6 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:sobatternak_application/features/profile/EditProfil.dart';
 import 'package:sobatternak_application/features/profile/GantiPassword.dart';
 import 'package:sobatternak_application/features/profile/TentangKami.dart';
+import 'package:sobatternak_application/pages/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -26,20 +27,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserProfile() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DatabaseReference userRef = FirebaseDatabase.instance.ref().child('users').child(user.uid);
-      DataSnapshot snapshot = await userRef.get();
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DatabaseReference userRef =
+            FirebaseDatabase.instance.ref().child('users').child(user.uid);
+        DataSnapshot snapshot = await userRef.get();
 
-      if (snapshot.exists) {
-        if (mounted) {
+        if (snapshot.exists) {
           setState(() {
             _name = snapshot.child('name').value as String?;
             _email = snapshot.child('email').value as String?;
             _imageUrl = snapshot.child('profileImageUrl').value as String?;
           });
+        } else {
+          print('No data available for user: ${user.uid}');
         }
+      } else {
+        print('Current user is null');
       }
+    } catch (e) {
+      print('Error loading user profile: $e');
+      // Handle error appropriately, e.g., show an error message
     }
   }
 
@@ -68,7 +77,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       TaskSnapshot snapshot = await uploadTask;
       String downloadUrl = await snapshot.ref.getDownloadURL();
 
-      DatabaseReference userRef = FirebaseDatabase.instance.ref().child('users').child(user.uid);
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.ref().child('users').child(user.uid);
       await userRef.update({'profileImageUrl': downloadUrl});
 
       if (mounted) {
@@ -79,6 +89,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       print('Failed to upload image: $e');
     }
+  }
+
+  Future<void> _showLogoutConfirmationDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Konfirmasi Logout'),
+          content: Text('Apakah Anda yakin ingin keluar dari akun ini?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Tidak'),
+              onPressed: () {
+                Navigator.of(context)
+                    .pop(false); // Tutup dialog dengan nilai false
+              },
+            ),
+            TextButton(
+              child: Text('Ya'),
+              onPressed: () {
+                // Lakukan logout di sini
+                FirebaseAuth.instance.signOut();
+                Navigator.of(context)
+                    .pop(true); // Tutup dialog dengan nilai true
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -124,7 +164,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             radius: 50,
                             backgroundImage: _imageUrl != null
                                 ? NetworkImage(_imageUrl!)
-                                : AssetImage('assets/images/profile/placeholder.png') as ImageProvider,
+                                : AssetImage(
+                                        'assets/images/profile/placeholder.png')
+                                    as ImageProvider,
                           ),
                         ),
                         SizedBox(height: 10),
@@ -171,7 +213,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => EditProfileScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfileScreen()),
                               );
                             },
                             style: OutlinedButton.styleFrom(
@@ -181,8 +224,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 borderRadius: BorderRadius.zero,
                               ),
                             ).copyWith(
-                              side: MaterialStateProperty.resolveWith<BorderSide>((states) {
-                                if (states.contains(MaterialState.pressed) || states.contains(MaterialState.hovered)) {
+                              side:
+                                  MaterialStateProperty.resolveWith<BorderSide>(
+                                      (states) {
+                                if (states.contains(MaterialState.pressed) ||
+                                    states.contains(MaterialState.hovered)) {
                                   return BorderSide(color: Colors.grey);
                                 }
                                 return BorderSide(color: Colors.transparent);
@@ -211,7 +257,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => GantiPasswordScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        GantiPasswordScreen()),
                               );
                             },
                             style: OutlinedButton.styleFrom(
@@ -221,8 +269,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 borderRadius: BorderRadius.zero,
                               ),
                             ).copyWith(
-                              side: MaterialStateProperty.resolveWith<BorderSide>((states) {
-                                if (states.contains(MaterialState.pressed) || states.contains(MaterialState.hovered)) {
+                              side:
+                                  MaterialStateProperty.resolveWith<BorderSide>(
+                                      (states) {
+                                if (states.contains(MaterialState.pressed) ||
+                                    states.contains(MaterialState.hovered)) {
                                   return BorderSide(color: Colors.grey);
                                 }
                                 return BorderSide(color: Colors.transparent);
@@ -251,7 +302,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => TentangKamiScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) => TentangKamiScreen()),
                               );
                             },
                             style: OutlinedButton.styleFrom(
@@ -261,8 +313,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 borderRadius: BorderRadius.zero,
                               ),
                             ).copyWith(
-                              side: MaterialStateProperty.resolveWith<BorderSide>((states) {
-                                if (states.contains(MaterialState.pressed) || states.contains(MaterialState.hovered)) {
+                              side:
+                                  MaterialStateProperty.resolveWith<BorderSide>(
+                                      (states) {
+                                if (states.contains(MaterialState.pressed) ||
+                                    states.contains(MaterialState.hovered)) {
                                   return BorderSide(color: Colors.grey);
                                 }
                                 return BorderSide(color: Colors.transparent);
@@ -289,10 +344,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           width: double.infinity,
                           child: OutlinedButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => TentangKamiScreen()),
-                              );
+                              // Panggil fungsi untuk menampilkan dialog konfirmasi logout
+                                  _showLogoutConfirmationDialog(context);
                             },
                             style: OutlinedButton.styleFrom(
                               padding: EdgeInsets.symmetric(vertical: 10),
@@ -301,8 +354,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 borderRadius: BorderRadius.zero,
                               ),
                             ).copyWith(
-                              side: MaterialStateProperty.resolveWith<BorderSide>((states) {
-                                if (states.contains(MaterialState.pressed) || states.contains(MaterialState.hovered)) {
+                              side:
+                                  MaterialStateProperty.resolveWith<BorderSide>(
+                                      (states) {
+                                if (states.contains(MaterialState.pressed) ||
+                                    states.contains(MaterialState.hovered)) {
                                   return BorderSide(color: Colors.grey);
                                 }
                                 return BorderSide(color: Colors.transparent);
@@ -346,7 +402,8 @@ class AvatarClipper extends CustomClipper<Path> {
 
     Path path = Path();
     path.lineTo(0, centerY - radius);
-    path.quadraticBezierTo(centerX, centerY + radius, size.width, centerY - radius);
+    path.quadraticBezierTo(
+        centerX, centerY + radius, size.width, centerY - radius);
     path.lineTo(size.width, 0);
     path.close();
     return path;

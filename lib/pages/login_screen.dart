@@ -44,9 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       _showFlushBar("Login successful", Colors.green, () {});
       Future.delayed(Duration(seconds: 2), () {
-        Navigator.pushReplacement(
-          context,
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => NavigationsBar()),
+          (Route<dynamic> route) => false,
         );
       });
     } on FirebaseAuthException catch (e) {

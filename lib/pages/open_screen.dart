@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sobatternak_application/pages/AuthenChecker.dart';
 import 'package:sobatternak_application/pages/welcome_screen.dart';
 
 class OpenUI extends StatefulWidget {
@@ -9,11 +11,21 @@ class OpenUI extends StatefulWidget {
 }
 
 class _OpenUIState extends State<OpenUI> {
+  Future<void> _checkLoginStatus() async {
+    await Future.delayed(Duration(seconds: 3)); // Durasi splash screen
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => AuthChecker(isLoggedIn: isLoggedIn)),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     // Langsung pindah ke tampilan utama setelah 7 detik
-    _navigateToWelcome_Screen(context);
+    _checkLoginStatus();
   }
 
   @override

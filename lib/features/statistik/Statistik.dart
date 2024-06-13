@@ -1,6 +1,28 @@
 import 'package:flutter/material.dart';
 
 class StatistikScreen extends StatelessWidget {
+
+  Future<bool> _onWillPop(BuildContext context) async {
+    final shouldPop = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Konfirmasi'),
+        content: Text('Anda yakin ingin keluar dari aplikasi?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Tidak'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Ya'),
+          ),
+        ],
+      ),
+    );
+    return shouldPop ?? false;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

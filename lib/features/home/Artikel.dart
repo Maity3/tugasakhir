@@ -28,15 +28,15 @@ class ArtikelDetail extends StatelessWidget {
                           child: FancyShimmerImage(
                               boxFit: BoxFit.cover,
                               imageUrl:
-                                  image?? ''),
+                                 'https://cdn1.katadata.co.id/media/images/thumb/2023/11/15/El_Nino_Adalah_Fenomena_Iklim-2023_11_15-14_11_46_a594a843bdb48bc8c3bd8fb2b8480a50_960x640_thumb.jpg'),
                         )),
                     const SizedBox(
                       width: 20,
                     ),
                     Expanded(
                         child: Text(
-                      title ?? '',
-                      maxLines: 2,
+                      'Mengatasi Tantangan Iklim Terkait Fenomena El Niño dalam Industri Peternakan di Indonesia',
+                      maxLines: 4,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontWeight: FontWeight.normal),
                     ))
